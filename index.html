@@ -1,446 +1,411 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b1020">
-<link rel="manifest" href="manifest.webmanifest">
-<title>PAYZO — Fast • Secure • Simple</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <title>PAYZO | Premium Member Portal</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #0d1a2b;
+      --panel2: #101f32;
+      --gold: #d8b55c;
+      --gold2: #f2d98b;
+      --white: #f8f7f2;
+      --muted: #aab5c4;
+      --line: #d8b55c38;
+    }
 
-<style>
-:root {
-  --navy: #0b1020;
-  --panel: #121a2e;
-  --gold: #e8bd62;
-  --white: #f8fafc;
-  --muted: #aab3c8;
-  --line: #29344c;
-}
+    * { box-sizing: border-box; }
 
-* { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at top, #172944 0%, transparent 55%),
+        var(--bg);
+      color: var(--white);
+      font-family: system-ui, Arial, sans-serif;
+    }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--white);
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  background:
-    radial-gradient(ellipse at top, #263452 0%, transparent 55%),
-    linear-gradient(160deg, #0b1020, #10182a 55%, #080d19);
-}
+    button, input { font: inherit; }
+    button { cursor: pointer; }
 
-button, input { font: inherit; }
-button { cursor: pointer; }
+    .shell {
+      width: min(100% - 28px, 480px);
+      margin: auto;
+      padding: 26px 0 40px;
+    }
 
-.wrap {
-  width: min(100% - 28px, 850px);
-  margin: auto;
-  padding: 24px 0 35px;
-}
+    .brand {
+      text-align: center;
+      padding: 18px 0 24px;
+    }
 
-header { text-align: center; }
+    .ornament {
+      color: var(--gold);
+      font-size: 25px;
+      letter-spacing: 9px;
+      margin-bottom: 8px;
+    }
 
-.brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-  margin: 8px 0;
-}
+    .brand-name {
+      color: var(--gold2);
+      font-family: Georgia, serif;
+      font-size: clamp(38px, 12vw, 54px);
+      font-weight: 700;
+      letter-spacing: 7px;
+      text-shadow: 0 0 25px #d8b55c25;
+    }
 
-.mark {
-  width: 58px;
-  height: 58px;
-  display: grid;
-  place-items: center;
-  border: 2px solid var(--gold);
-  border-radius: 18px;
-  color: var(--gold);
-  font-size: 32px;
-  font-weight: 900;
-  box-shadow: 0 0 24px #e8bd6220;
-}
+    .brand-sub {
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 4px;
+      margin-top: 7px;
+    }
 
-h1 {
-  margin: 0;
-  font-size: clamp(30px, 7vw, 42px);
-  letter-spacing: 3px;
-  color: #f8fafc;
-}
+    .gold-line {
+      width: 110px;
+      height: 1px;
+      margin: 18px auto;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
 
-h1 span, .gold { color: var(--gold); }
+    .intro {
+      text-align: center;
+      margin: 12px 0 24px;
+    }
 
-.tag {
-  margin: 5px 0 25px;
-  color: var(--muted);
-  font-size: 12px;
-  letter-spacing: 2px;
-}
+    .intro h1 {
+      font-family: Georgia, serif;
+      font-size: 27px;
+      margin: 0 0 9px;
+      font-weight: 600;
+    }
 
-.hero {
-  text-align: center;
-  padding: 26px 8px 25px;
-}
+    .intro p, .muted {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
 
-.eyebrow {
-  display: inline-block;
-  padding: 7px 13px;
-  border: 1px solid #65522c;
-  border-radius: 50px;
-  color: var(--gold);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-}
+    .card {
+      background: linear-gradient(145deg, #102037, #0b1727);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 15px 40px #0003;
+    }
 
-.hero h2 {
-  margin: 17px 0 10px;
-  font-size: clamp(28px, 6vw, 43px);
-  line-height: 1.2;
-}
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 13px;
+    }
 
-.hero p {
-  max-width: 540px;
-  margin: auto;
-  color: var(--muted);
-  font-size: 15px;
-  line-height: 1.8;
-}
+    .choice-icon {
+      flex: 0 0 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      color: var(--gold2);
+      background: #d8b55c12;
+      border: 1px solid var(--line);
+      font-size: 23px;
+    }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 17px;
-  margin: 15px 0 22px;
-}
+    .choice-copy { flex: 1; }
+    .choice-copy h2 { font-size: 16px; margin: 0 0 5px; }
+    .choice-copy p { margin: 0; font-size: 12px; color: var(--muted); }
 
-.card, .panel {
-  border: 1px solid var(--line);
-  border-radius: 21px;
-  background: linear-gradient(145deg, #18233a, #101728);
-  box-shadow: 0 16px 40px #0003;
-}
+    .btn {
+      width: 100%;
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 13px 15px;
+      font-weight: 750;
+      color: #101827;
+      background: linear-gradient(135deg, var(--gold2), #b68b36);
+    }
 
-.card {
-  padding: 23px;
-  transition: transform .2s, border-color .2s;
-}
+    .btn.secondary {
+      color: var(--gold2);
+      background: #d8b55c0b;
+    }
 
-.card:hover {
-  transform: translateY(-3px);
-  border-color: #806b3d;
-}
+    .btn:disabled { opacity: .65; cursor: wait; }
 
-.iconbox {
-  width: 55px;
-  height: 55px;
-  display: grid;
-  place-items: center;
-  border: 1px solid #66542e;
-  border-radius: 16px;
-  background: #e8bd6212;
-  font-size: 28px;
-}
+    .back {
+      display: inline-block;
+      border: 0;
+      background: none;
+      color: var(--gold2);
+      padding: 8px 0 18px;
+    }
 
-.card h3 {
-  margin: 17px 0 8px;
-  font-size: 21px;
-}
+    #loginPanel { display: none; }
+    #loginPanel.show { display: block; }
+    [hidden] { display: none !important; }
 
-.card p {
-  min-height: 66px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.7;
-}
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-button {
-  width: 100%;
-  padding: 13px 16px;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  background: linear-gradient(110deg, #f4d995, #d6a541);
-  color: #171b25;
-  font-weight: 800;
-  font-size: 14px;
-  transition: filter .2s;
-}
+    input {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ffffff20;
+      border-radius: 11px;
+      background: #07111f;
+      color: var(--white);
+      outline: none;
+    }
 
-button:hover { filter: brightness(1.07); }
-button:disabled { opacity: .55; cursor: not-allowed; }
+    input:focus { border-color: var(--gold); }
 
-.secondary {
-  width: auto;
-  background: #19243a;
-  color: var(--white);
-  border-color: #35425c;
-}
+    .password-row {
+      display: flex;
+      gap: 8px;
+    }
 
-.panel {
-  display: none;
-  margin: 18px 0;
-  padding: clamp(18px, 4vw, 28px);
-}
+    .password-row input { flex: 1; min-width: 0; }
 
-.panel.show { display: block; }
+    .eye {
+      color: var(--gold2);
+      background: #d8b55c12;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 0 12px;
+    }
 
-.toprow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
+    .message {
+      margin-top: 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
 
-.toprow h2 { margin: 8px 0; }
+    .message.error { color: #ffb6b6; }
+    .message.success { color: #a8f0c3; }
 
-.field {
-  display: block;
-  margin: 17px 0;
-  color: var(--muted);
-  font-size: 13px;
-}
+    #dashboard { display: none; }
+    #dashboard.show { display: block; }
 
-.field input {
-  display: block;
-  width: 100%;
-  min-width: 0;
-  margin-top: 8px;
-  padding: 13px 14px;
-  border: 1px solid #35425c;
-  border-radius: 11px;
-  outline: none;
-  background: #0b1020;
-  color: var(--white);
-  font-size: 15px;
-}
+    .dash-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
 
-.field input:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px #e8bd6218;
-}
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--gold2);
+      padding: 7px 10px;
+      font-size: 10px;
+      overflow-wrap: anywhere;
+    }
 
-.password-wrap {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-}
+    .stat {
+      margin-top: 13px;
+      padding: 15px;
+      background: #07111f;
+      border: 1px solid #ffffff10;
+      border-radius: 13px;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
 
-.password-wrap input {
-  flex: 1;
-  width: 0;
-}
+    .small { font-size: 12px; color: var(--muted); }
 
-.password-toggle {
-  width: 54px;
-  flex-shrink: 0;
-  margin-top: 8px;
-  padding: 8px;
-  border: 1px solid #35425c;
-  border-radius: 11px;
-  background: #19243a;
-  color: var(--gold);
-  font-size: 19px;
-}
+    .support {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 22px;
+    }
 
-.small {
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.7;
-}
+    .support a {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      text-decoration: none;
+      font-size: 21px;
+    }
 
-.pill {
-  display: inline-block;
-  margin-bottom: 10px;
-  padding: 5px 11px;
-  border: 1px solid #65522c;
-  border-radius: 50px;
-  color: var(--gold);
-  font-size: 11px;
-}
-
-.message {
-  margin: 12px 0;
-  padding: 12px;
-  border-radius: 11px;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.error {
-  border: 1px solid #75414b;
-  background: #321c25;
-  color: #ffd0d0;
-}
-
-.success {
-  border: 1px solid #32684f;
-  background: #153126;
-  color: #c9f7dc;
-}
-
-.mutedbox, .listitem {
-  overflow-wrap: anywhere;
-  padding: 14px;
-  border: 1px solid #34415a;
-  border-radius: 12px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.listitem { margin: 10px 0; }
-.listitem b { color: #f3d58e; }
-
-footer {
-  margin-top: 30px;
-  padding-top: 18px;
-  border-top: 1px solid #29344c;
-  text-align: center;
-  color: #79849d;
-  font-size: 12px;
-}
-
-@media (max-width: 560px) {
-  .wrap { width: min(100% - 22px, 850px); padding-top: 17px; }
-  .cards { grid-template-columns: 1fr; gap: 13px; }
-  .card { padding: 20px; }
-  .card p { min-height: 0; }
-  .card h3 { margin-top: 12px; }
-  .hero { padding-top: 22px; }
-}
-</style>
+    .foot {
+      text-align: center;
+      color: #7f8da0;
+      font-size: 11px;
+      margin-top: 26px;
+    }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
+  <main class="shell">
+    <header class="brand">
+      <div class="ornament">✦ ── ✧ ── ✦</div>
+      <div class="brand-name">PAYZO</div>
+      <div class="brand-sub">PREMIUM MEMBER PORTAL</div>
+      <div class="gold-line"></div>
+    </header>
 
-<header>
-  <div class="brand">
-    <div class="mark">P</div>
-    <h1>PA<span>Y</span>ZO</h1>
-  </div>
-  <p class="tag">FAST • SECURE • SIMPLE</p>
-</header>
-
-<section id="landing">
-  <section class="hero">
-    <span class="eyebrow">WELCOME TO PAYZO</span>
-    <h2>Manage Your <span class="gold">PAYZO</span> Account</h2>
-    <p>আপনার অ্যাকাউন্টে নিরাপদে প্রবেশ করুন। এজেন্সি পরিচালনা এবং নিজের Withdraw Request দেখুন।</p>
-  </section>
-
-  <section class="cards">
-    <article class="card">
-      <div class="iconbox">🏢</div>
-      <h3>Agency Login</h3>
-      <p>নিজের এজেন্সির Host তালিকা ও Withdraw Request পরিচালনার জন্য।</p>
-      <button type="button" onclick="showLogin('agency')">Agency Login →</button>
-    </article>
-
-    <article class="card">
-      <div class="iconbox">🎤</div>
-      <h3>Host Login</h3>
-      <p>নিজের প্রোফাইল, অ্যাকাউন্টের তথ্য এবং Withdraw Request দেখার জন্য।</p>
-      <button type="button" onclick="showLogin('host')">Host Login →</button>
-    </article>
-  </section>
-</section>
-
-<section id="loginPanel" class="panel">
-  <div class="toprow">
-    <div>
-      <span class="pill">SECURE ACCESS</span>
-      <h2 id="loginTitle">Login</h2>
-    </div>
-    <button type="button" class="secondary" onclick="backHome()">← Back</button>
-  </div>
-
-  <p class="small">আপনার নিবন্ধিত ইমেইল ও পাসওয়ার্ড ব্যবহার করুন।</p>
-  <div id="loginMessage" aria-live="polite"></div>
-
-  <form id="loginForm">
-    <label class="field">
-      Email Address
-      <input id="email" type="email" autocomplete="username"
-        required placeholder="আপনার ইমেইল লিখুন">
-    </label>
-
-    <label class="field">
-      Password
-      <div class="password-wrap">
-        <input id="password" type="password" minlength="6"
-          autocomplete="current-password" required
-          placeholder="কমপক্ষে ৬ অক্ষর">
-        <button class="password-toggle" type="button"
-          id="passwordToggle" onclick="togglePassword()"
-          aria-label="পাসওয়ার্ড দেখান" aria-pressed="false"
-          title="পাসওয়ার্ড দেখান">👁</button>
+    <section id="landing">
+      <div class="intro">
+        <h1>Welcome to PAYZO</h1>
+        <p>আপনার অ্যাকাউন্টে প্রবেশ করতে সঠিক লগইন নির্বাচন করুন।</p>
       </div>
-    </label>
 
-    <p class="small">পাসওয়ার্ডে ইংরেজি অক্ষর, সংখ্যা ও ডট (.) ব্যবহার করা যাবে।</p>
-    <button id="submitLogin" type="submit">নিরাপদে লগইন করুন</button>
-  </form>
+      <div class="card">
+        <div class="choice">
+          <div class="choice-icon">♛</div>
+          <div class="choice-copy">
+            <h2>Agency Login</h2>
+            <p>Agency ও Main Admin প্রবেশ</p>
+          </div>
+        </div>
+        <button class="btn" onclick="showLogin('agency')">
+          Agency Login
+        </button>
+      </div>
 
-  <p class="small">আপনার অনুমোদিত ভূমিকা (Host/Agency) না থাকলে প্রবেশ বন্ধ থাকবে।</p>
-</section>
+      <div class="card">
+        <div class="choice">
+          <div class="choice-icon">◈</div>
+          <div class="choice-copy">
+            <h2>Host Login</h2>
+            <p>নিজের প্রোফাইল ও Withdraw দেখুন</p>
+          </div>
+        </div>
+        <button class="btn secondary" onclick="showLogin('host')">
+          Host Login
+        </button>
+      </div>
+    </section>
 
-<section id="dashboard" class="panel">
-  <div class="toprow">
-    <div>
-      <span class="pill" id="rolePill">PORTAL</span>
-      <h2 id="welcome">আপনার প্যানেল</h2>
+    <section id="loginPanel">
+      <button class="back" onclick="backHome()">← ফিরে যান</button>
+
+      <div class="card">
+        <div class="intro">
+          <div class="ornament">✦</div>
+          <h1 id="loginTitle">Secure Login</h1>
+          <p>আপনার নিবন্ধিত ইমেইল ও পাসওয়ার্ড দিন।</p>
+        </div>
+
+        <form id="loginForm">
+          <label for="email">ইমেইল</label>
+          <input
+            id="email"
+            type="email"
+            autocomplete="username"
+            placeholder="আপনার ইমেইল"
+            required
+          >
+
+          <label for="password">পাসওয়ার্ড</label>
+          <div class="password-row">
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="পাসওয়ার্ড লিখুন"
+              minlength="6"
+              required
+            >
+            <button
+              class="eye"
+              type="button"
+              onclick="togglePassword()"
+              aria-label="পাসওয়ার্ড দেখান বা লুকান"
+            >👁</button>
+          </div>
+
+          <button id="submitLogin" class="btn" type="submit" style="margin-top:20px">
+            নিরাপদে লগইন
+          </button>
+
+          <div id="loginMessage" class="message" role="status"></div>
+        </form>
+      </div>
+    </section>
+
+    <section id="dashboard">
+      <div class="card">
+        <div class="dash-top">
+          <div>
+            <div class="small">আপনাকে স্বাগতম</div>
+            <h2 id="welcome">PAYZO Member</h2>
+          </div>
+          <span id="rolePill" class="pill">MEMBER</span>
+        </div>
+
+        <div class="gold-line"></div>
+        <div id="profileInfo" class="stat">প্রোফাইল লোড হচ্ছে…</div>
+
+        <h3 style="font-size:16px;margin-top:24px">Withdrawal History</h3>
+        <div id="withdrawals" class="stat">তথ্য লোড হচ্ছে…</div>
+
+        <div id="agencyHostsWrap" hidden>
+          <h3 style="font-size:16px;margin-top:24px">My Hosts</h3>
+          <div id="agencyHosts" class="stat"></div>
+        </div>
+
+        <div id="dashboardMessage" class="message"></div>
+
+        <button
+          class="btn secondary"
+          type="button"
+          onclick="signOut()"
+          style="margin-top:20px"
+        >Logout</button>
+      </div>
+    </section>
+
+    <div id="configNotice" class="card muted" hidden>
+      PAYZO সংযোগের সেটিংস যাচাই করা প্রয়োজন।
     </div>
-    <button type="button" class="secondary" onclick="signOut()">Logout</button>
-  </div>
 
-  <div id="profileInfo" class="mutedbox">তথ্য লোড হচ্ছে…</div>
-  <h3>Withdraw Requests</h3>
-  <div id="withdrawals"><p class="small">তথ্য লোড হচ্ছে…</p></div>
+    <nav class="support" aria-label="Support">
+      <a href="https://wa.me/8801318380803"
+         target="_blank" rel="noopener noreferrer"
+         aria-label="WhatsApp Support">🟢</a>
+      <a href="https://t.me/01903570514"
+         target="_blank" rel="noopener noreferrer"
+         aria-label="Telegram Support">🔵</a>
+    </nav>
 
-  <div id="agencyHostsWrap" hidden>
-    <h3>Agency Hosts</h3>
-    <div id="agencyHosts"><p class="small">তথ্য লোড হচ্ছে…</p></div>
-  </div>
+    <footer class="foot">
+      PAYZO • Premium Portal<br>
+      Secure access for registered members
+    </footer>
+  </main>
 
-  <p id="dashboardMessage" class="small"></p>
-</section>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
 
-<div id="configNotice" class="message error" hidden>
-  Supabase Publishable/anon key এখনো config.js-এ বসানো হয়নি। তাই লগইন চালু হবে না।
-</div>
-
-<footer>
-  <div>PAYZO</div>
-  <p>Fast • Secure • Simple</p>
-  <p>© PAYZO — Secure Account Access</p>
-</footer>
-
-</div>
-
-<script>
-function togglePassword() {
-  const password = document.getElementById("password");
-  const toggle = document.getElementById("passwordToggle");
-
-  if (!password || !toggle) return;
-
-  const showing = password.type === "password";
-  password.type = showing ? "text" : "password";
-  toggle.textContent = showing ? "🙈" : "👁";
-  toggle.setAttribute("aria-pressed", String(showing));
-  toggle.setAttribute(
-    "aria-label",
-    showing ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"
-  );
-  toggle.title = showing ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান";
-}
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<script src="app.js"></script>
+  <script>
+    window.togglePassword = function () {
+      const field = document.getElementById('password');
+      field.type = field.type === 'password' ? 'text' : 'password';
+    };
+  </script>
 </body>
   </html>
-  
