@@ -1,4 +1,3 @@
-
 (() => {
   const cfg = window.PAYZO_CONFIG || {};
   const key = cfg.SUPABASE_PUBLISHABLE_KEY || '';
@@ -68,7 +67,14 @@
       throw new Error('This account is not active.');
     }
 
-    if (data.role !== requestedRole) {
+    // Agency Login থেকে main_admin-কে অনুমতি দেওয়া হচ্ছে।
+    // Host Login দিয়ে main_admin বা agency প্রবেশ করতে পারবে না।
+    const allowed =
+      (requestedRole === 'agency' &&
+        ['agency', 'main_admin'].includes(data.role)) ||
+      (requestedRole === 'host' && data.role === 'host');
+
+    if (!allowed) {
       throw new Error(
         'This account is not authorized for ' +
         (requestedRole === 'agency' ? 'Agency' : 'Host') +
@@ -107,7 +113,8 @@
 
     if (!data || !data.length) {
       el.textContent = 'No withdrawal requests yet.';
-      $('withdrawalsCopy').textContent = 'No withdrawal requests yet.';
+      const copy = $('withdrawalsCopy');
+      if (copy) copy.textContent = 'No withdrawal requests yet.';
       return;
     }
 
@@ -135,9 +142,9 @@
 
     const copy = $('withdrawalsCopy');
     if (copy) {
-      copy.replaceChildren(...Array.from(el.children).map(item =>
-        item.cloneNode(true)
-      ));
+      copy.replaceChildren(
+        ...Array.from(el.children).map(item => item.cloneNode(true))
+      );
     }
   }
 
@@ -204,7 +211,6 @@
       ' | Status: ' + profile.status;
 
     $('profileCopy').textContent = $('profileInfo').textContent;
-
     $('agencyHostsWrap').hidden = profile.role !== 'agency';
 
     await loadWithdrawals(user, profile);
@@ -240,6 +246,13 @@
       }
 
       const profile = await loadProfile(data.user);
+
+      // Special Gmail-এর profile main_admin হলে Admin Panel খুলবে।
+      if (profile.role === 'main_admin') {
+        window.location.href = 'admin.html';
+        return;
+      }
+
       await showDashboard(data.user, profile);
 
     } catch (err) {
@@ -278,11 +291,17 @@
         if (
           !profileError &&
           profile &&
-          profile.status === 'active' &&
-          ['host', 'agency'].includes(profile.role)
+          profile.status === 'active'
         ) {
-          requestedRole = profile.role;
-          await showDashboard(user, profile);
+          if (profile.role === 'main_admin') {
+            window.location.href = 'admin.html';
+            return;
+          }
+
+          if (['host', 'agency'].includes(profile.role)) {
+            requestedRole = profile.role;
+            await showDashboard(user, profile);
+          }
         }
       } catch (err) {
         console.error('Session restore failed:', err);
@@ -290,4 +309,3 @@
     });
   }
 })();
- 
