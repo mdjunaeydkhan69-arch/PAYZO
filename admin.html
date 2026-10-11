@@ -1,1 +1,372 @@
-<!doctype html><html lang="bn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1020"><title>PAYZO</title><style>body{margin:0;background:#0b1020;color:#f8fafc;font-family:system-ui,sans-serif}.wrap{max-width:720px;margin:auto;padding:28px 16px}.brand{text-align:center;color:#e8bd62;font-weight:900;font-size:30px;letter-spacing:2px}.box{background:#121a2e;border:1px solid #29344c;border-radius:18px;padding:22px;margin-top:20px}input{box-sizing:border-box;width:100%;padding:12px;margin:8px 0 14px;background:#0b1020;color:white;border:1px solid #35425c;border-radius:10px}button{padding:13px;width:100%;border:0;border-radius:10px;background:#e8bd62;font-weight:800}.msg{font-size:14px;line-height:1.5;color:#ffbcbc}.muted{color:#aab3c8;font-size:13px}</style></head><body><main class="wrap"><div class="brand">PAYZO</div><section class="box"><h2>Account Sign In</h2><p class="muted">Sign in with your authorized account.</p><div id="message" class="msg"></div><form id="adminForm"><label>Email<input id="email" type="email" autocomplete="username" required></label><label>Password<input id="password" type="password" autocomplete="current-password" minlength="6" required></label><button id="submit" type="submit">Continue</button></form></section><section id="adminArea" class="box" hidden><h2>Overview</h2><p id="adminIdentity" class="muted"></p><p>Withdraw requests</p><div id="withdrawals"></div><button id="logout">Logout</button></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="admin.js"></script></body></html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080d19">
+<title>PAYZO | Main Admin</title>
+<style>
+:root{--bg:#080d19;--panel:#111a2b;--gold:#e7bd63;--text:#f5f7fc;--muted:#9ba9bd;--line:#29364c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
+[hidden]{display:none!important}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1150px;margin:auto;padding:22px}
+.brand{font-size:26px;font-weight:900;color:var(--gold);letter-spacing:2px}
+.brand span{color:white}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:18px}
+h1{font-size:24px}h2{font-size:18px}
+input,select{width:100%;padding:12px;margin:6px 0 14px;border:1px solid var(--line);border-radius:8px;background:#0b1220;color:white}
+button,.btn{padding:11px 14px;border:0;border-radius:8px;background:var(--gold);color:#111827;font-weight:bold}
+.secondary{background:#25334a;color:white}
+.danger{background:#8c3540;color:white}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tabs button{background:#202b3e;color:white}
+.tabs button.active{background:var(--gold);color:#111827}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin-top:12px;font-size:13px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--gold)}
+.muted{color:var(--muted);line-height:1.6}
+.msg{margin-top:12px;padding:12px;border-radius:8px;background:#25334a;overflow-wrap:anywhere}
+.error{background:#48232b;color:#ffd5d9}
+.actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.actions button{padding:8px;font-size:12px}
+@media(max-width:600px){.wrap{padding:12px}.panel{padding:13px}h1{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">PAY<span>ZO</span> <small style="font-size:12px;color:white">MAIN ADMIN</small></div>
+
+  <section id="login" class="panel" style="max-width:430px;margin:35px auto">
+    <h1>Administrator Login</h1>
+    <p class="muted">Sign in with your pre-approved administrator account.</p>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <button id="loginBtn" type="submit">Secure Login</button>
+    </form>
+    <div id="loginMsg" class="msg" hidden></div>
+  </section>
+
+  <section id="admin" hidden>
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div><h1>Main Admin Dashboard</h1><div id="adminInfo" class="muted"></div></div>
+        <button id="logout" class="secondary">Logout</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="active" data-tab="agencies">Agencies</button>
+      <button data-tab="hosts">Hosts</button>
+      <button data-tab="withdrawals">Withdraw Requests</button>
+    </div>
+
+    <section id="agencies" class="panel">
+      <h2>Agencies</h2>
+      <p class="muted">Existing agency records from the database.</p>
+      <button id="refreshAgencies" class="secondary">Refresh</button>
+      <div id="agencyMsg" class="muted"></div>
+      <div id="agencyTable" class="tablewrap"></div>
+    </section>
+
+    <section id="hosts" class="panel" hidden>
+      <h2>Host Management</h2>
+      <input id="hostSearch" placeholder="Search by name or PAYZO UID">
+      <button id="refreshHosts" class="secondary">Refresh Hosts</button>
+      <div id="hostMsg" class="muted"></div>
+      <div id="hostTable" class="tablewrap"></div>
+    </section>
+
+    <section id="withdrawals" class="panel" hidden>
+      <h2>Withdrawal Requests</h2>
+      <button id="refreshWithdrawals" class="secondary">Refresh Requests</button>
+      <div id="withdrawMsg" class="muted"></div>
+      <div id="withdrawTable" class="tablewrap"></div>
+    </section>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js"></script>
+<script>
+(() => {
+  const cfg = window.PAYZO_CONFIG || {};
+  const key = cfg.SUPABASE_PUBLISHABLE_KEY || '';
+  const $ = id => document.getElementById(id);
+  let db = null, adminUser = null, hosts = [], agencies = [];
+
+  if (cfg.SUPABASE_URL && key && window.supabase) {
+    db = window.supabase.createClient(cfg.SUPABASE_URL, key);
+  }
+
+  function message(id, text, error=false) {
+    const el = $(id);
+    el.hidden = !text;
+    el.textContent = text || '';
+    el.className = error ? 'msg error' : 'msg';
+  }
+
+  function cell(row, value) {
+    const td = row.insertCell();
+    td.textContent = value == null ? '—' : String(value);
+    return td;
+  }
+
+  function table(containerId, columns, rows, actions) {
+    const root = $(containerId);
+    root.replaceChildren();
+    const t = document.createElement('table');
+    const head = t.createTHead().insertRow();
+    columns.forEach(c => {
+      const th = document.createElement('th');
+      th.textContent = c.label;
+      head.appendChild(th);
+    });
+    if (actions) {
+      const th = document.createElement('th');
+      th.textContent = 'Actions';
+      head.appendChild(th);
+    }
+    const body = t.createTBody();
+    rows.forEach(item => {
+      const tr = body.insertRow();
+      columns.forEach(c => cell(tr, item[c.key]));
+      if (actions) {
+        const td = tr.insertCell();
+        td.appendChild(actions(item));
+      }
+    });
+    if (!rows.length) {
+      const tr = body.insertRow();
+      const td = tr.insertCell();
+      td.colSpan = columns.length + (actions ? 1 : 0);
+      td.textContent = 'No records found.';
+    }
+    root.appendChild(t);
+  }
+
+  async function requireAdmin(user) {
+    const {data, error} = await db.from('profiles')
+      .select('id,uid,full_name,role,status')
+      .eq('id', user.id).maybeSingle();
+
+    if (error) throw new Error('Cannot verify administrator role. Check profiles database policies.');
+    if (!data || data.role !== 'main_admin' || data.status !== 'active') {
+      throw new Error('Access denied. An active, pre-approved main_admin account is required.');
+    }
+
+    adminUser = user;
+    $('adminInfo').textContent = (data.full_name || data.uid || 'Administrator') +
+      ' • ' + data.role + ' • ' + data.status;
+    $('login').hidden = true;
+    $('admin').hidden = false;
+    await Promise.all([loadAgencies(), loadHosts(), loadWithdrawals()]);
+  }
+
+  async function loadAgencies() {
+    message('agencyMsg', 'Loading agencies...');
+    const {data, error} = await db.from('agencies').select('*').limit(300);
+    if (error) {
+      message('agencyMsg', 'Could not load agencies. Check the agencies table and RLS policies.', true);
+      $('agencyTable').replaceChildren();
+      return;
+    }
+    agencies = data || [];
+    if (!agencies.length) {
+      message('agencyMsg', 'No agency records found.');
+      $('agencyTable').replaceChildren();
+      return;
+    }
+    message('agencyMsg', '');
+    const keys = Object.keys(agencies[0]).slice(0, 8);
+    table('agencyTable', keys.map(k => ({key:k,label:k})), agencies);
+  }
+
+  async function loadHosts() {
+    message('hostMsg', 'Loading hosts...');
+    const {data, error} = await db.from('profiles')
+      .select('id,uid,full_name,role,status,agency_id')
+      .eq('role', 'host').order('full_name').limit(500);
+
+    if (error) {
+      message('hostMsg', 'Could not load hosts. Check profiles RLS policies.', true);
+      $('hostTable').replaceChildren();
+      return;
+    }
+
+    hosts = data || [];
+    renderHosts();
+  }
+
+  function renderHosts() {
+    const search = $('hostSearch').value.trim().toLowerCase();
+    const rows = hosts.filter(h =>
+      String(h.uid || '').toLowerCase().includes(search) ||
+      String(h.full_name || '').toLowerCase().includes(search)
+    );
+    message('hostMsg', rows.length + ' host record(s). Changes affect existing profiles.');
+    table('hostTable', [
+      {key:'uid',label:'PAYZO UID'},
+      {key:'full_name',label:'Name'},
+      {key:'status',label:'Status'},
+      {key:'agency_id',label:'Agency ID'}
+    ], rows, h => {
+      const box = document.createElement('div');
+      box.className = 'actions';
+
+      const status = document.createElement('button');
+      status.className = h.status === 'active' ? 'danger' : '';
+      status.textContent = h.status === 'active' ? 'Deactivate' : 'Activate';
+      status.onclick = async () => {
+        if (!confirm('Change this host status?')) return;
+        const next = h.status === 'active' ? 'inactive' : 'active';
+        const {error} = await db.from('profiles')
+          .update({status:next}).eq('id', h.id);
+        if (error) return message('hostMsg', 'Status update failed. Check RLS policies.', true);
+        await loadHosts();
+      };
+      box.appendChild(status);
+
+      const select = document.createElement('select');
+      select.style.width = '145px';
+      const unassigned = document.createElement('option');
+      unassigned.value = '';
+      unassigned.textContent = 'Unassigned';
+      select.appendChild(unassigned);
+
+      agencies.forEach(a => {
+        const op = document.createElement('option');
+        op.value = a.id || '';
+        op.textContent = a.name || a.agency_name || a.uid || a.id || 'Agency';
+        select.appendChild(op);
+      });
+      select.value = h.agency_id || '';
+
+      const move = document.createElement('button');
+      move.className = 'secondary';
+      move.textContent = 'Save Agency';
+      move.onclick = async () => {
+        if (!confirm('Save this agency assignment?')) return;
+        const {error} = await db.from('profiles')
+          .update({agency_id:select.value || null}).eq('id',h.id);
+        if (error) return message('hostMsg', 'Assignment failed. Check database policy and agency ID type.', true);
+        await loadHosts();
+      };
+      box.append(select, move);
+      return box;
+    });
+  }
+
+  async function loadWithdrawals() {
+    message('withdrawMsg', 'Loading withdrawal requests...');
+    const {data, error} = await db.from('withdrawals')
+      .select('id,app_name,host_id,agency_id,amount,payout_method,payment_source,status,created_at')
+      .order('created_at',{ascending:false}).limit(500);
+
+    if (error) {
+      message('withdrawMsg', 'Could not load requests. Check withdrawals RLS policies.', true);
+      $('withdrawTable').replaceChildren();
+      return;
+    }
+
+    const rows = data || [];
+    message('withdrawMsg', rows.length + ' request(s) loaded.');
+    table('withdrawTable', [
+      {key:'id',label:'Request ID'},
+      {key:'app_name',label:'App'},
+      {key:'host_id',label:'Host ID'},
+      {key:'amount',label:'Amount'},
+      {key:'payout_method',label:'Payout Method'},
+      {key:'payment_source',label:'Payment Source'},
+      {key:'status',label:'Status'}
+    ], rows, w => {
+      const box = document.createElement('div');
+      box.className = 'actions';
+      const select = document.createElement('select');
+      ['pending','approved','paid','rejected'].forEach(s => {
+        const op = document.createElement('option');
+        op.value = s;
+        op.textContent = s;
+        select.appendChild(op);
+      });
+      select.value = String(w.status || 'pending').toLowerCase();
+
+      const save = document.createElement('button');
+      save.textContent = 'Update';
+      save.onclick = async () => {
+        if (!confirm('Update this withdrawal status?')) return;
+        const {error} = await db.from('withdrawals')
+          .update({status:select.value}).eq('id',w.id);
+        if (error) return message('withdrawMsg', 'Update failed. Check status values and RLS policies.', true);
+        await loadWithdrawals();
+      };
+      box.append(select,save);
+      return box;
+    });
+  }
+
+  $('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!db) return message('loginMsg','Supabase configuration is missing.',true);
+
+    $('loginBtn').disabled = true;
+    $('loginBtn').textContent = 'Checking...';
+    try {
+      const {data,error} = await db.auth.signInWithPassword({
+        email:$('email').value.trim(),
+        password:$('password').value
+      });
+      if (error) throw new Error('Login failed. Check your email and password.');
+      await requireAdmin(data.user);
+    } catch(err) {
+      if (db) await db.auth.signOut();
+      message('loginMsg',err.message || 'Admin login failed.',true);
+    } finally {
+      $('loginBtn').disabled = false;
+      $('loginBtn').textContent = 'Secure Login';
+    }
+  });
+
+  $('logout').onclick = async () => {
+    if (db) await db.auth.signOut();
+    adminUser = null;
+    $('admin').hidden = true;
+    $('login').hidden = false;
+    $('password').value = '';
+  };
+
+  document.querySelectorAll('[data-tab]').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===btn));
+      ['agencies','hosts','withdrawals'].forEach(id => $(id).hidden = id !== btn.dataset.tab);
+    };
+  });
+
+  $('refreshAgencies').onclick = loadAgencies;
+  $('refreshHosts').onclick = loadHosts;
+  $('refreshWithdrawals').onclick = loadWithdrawals;
+  $('hostSearch').addEventListener('input',renderHosts);
+
+  if (db) {
+    db.auth.getSession().then(async ({data,error}) => {
+      if (!error && data.session) {
+        try { await requireAdmin(data.session.user); }
+        catch (e) {
+          await db.auth.signOut();
+          message('loginMsg',e.message,true);
+        }
+      }
+    });
+  }
+})();
+</script>
+</body>
+        </html>
+  
