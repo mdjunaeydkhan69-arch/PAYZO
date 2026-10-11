@@ -192,7 +192,19 @@ document.querySelectorAll('.navbtn[data-section]').forEach(function(btn){
   });
 });
 </script>
+ 
+<script>
+document.querySelectorAll('.choice').forEach(function(button) {
+  button.onclick = function() {
+    var role = button.querySelector('strong').textContent;
+    document.getElementById('landing').hidden = true;
+    document.getElementById('loginPanel').hidden = false;
+    document.getElementById('loginTitle').textContent = role;
+  };
+});
+</script>
 </body>
-  </html>
+</html>
+
 
                                     
