@@ -1,0 +1,9 @@
+{
+  "name": "PAYZO",
+  "short_name": "PAYZO",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "description": "PAYZO Host and Agency Portal"
+}
